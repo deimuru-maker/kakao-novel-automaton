@@ -14,18 +14,27 @@ interface NovelGeneratorProps {
 }
 
 export default function NovelGenerator({ onNovelGenerated }: NovelGeneratorProps) {
-  const [genre, setGenre] = useState("");
-  const [theme, setTheme] = useState("");
-  const [characters, setCharacters] = useState("");
+  const [episodeCount, setEpisodeCount] = useState("1");
+  const [synopsis, setSynopsis] = useState("");
   const [length, setLength] = useState("medium");
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
   const handleGenerate = async () => {
-    if (!genre || !theme || !characters) {
+    if (!synopsis || !episodeCount) {
       toast({
         title: "입력 필요",
         description: "모든 필드를 입력해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const count = parseInt(episodeCount);
+    if (isNaN(count) || count < 1 || count > 10) {
+      toast({
+        title: "잘못된 입력",
+        description: "에피소드 수는 1~10 사이로 입력해주세요.",
         variant: "destructive",
       });
       return;
@@ -35,7 +44,12 @@ export default function NovelGenerator({ onNovelGenerated }: NovelGeneratorProps
 
     try {
       const { data, error } = await supabase.functions.invoke('generate-novel', {
-        body: { genre, theme, characters, length }
+        body: { 
+          genre: "로맨스 판타지",
+          synopsis, 
+          episodeCount: count, 
+          length 
+        }
       });
 
       if (error) {
@@ -76,44 +90,34 @@ export default function NovelGenerator({ onNovelGenerated }: NovelGeneratorProps
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="genre" className="text-foreground font-medium">장르</Label>
-          <Select value={genre} onValueChange={setGenre}>
-            <SelectTrigger id="genre" className="bg-input border-primary/30 focus:border-primary">
-              <SelectValue placeholder="장르를 선택하세요" />
-            </SelectTrigger>
-            <SelectContent className="bg-card border-primary/30">
-              <SelectItem value="fantasy">판타지</SelectItem>
-              <SelectItem value="romance">로맨스</SelectItem>
-              <SelectItem value="modern-fantasy">현대 판타지</SelectItem>
-              <SelectItem value="martial-arts">무협</SelectItem>
-              <SelectItem value="mystery">미스터리</SelectItem>
-              <SelectItem value="sci-fi">SF</SelectItem>
-              <SelectItem value="horror">공포/스릴러</SelectItem>
-              <SelectItem value="school">학원물</SelectItem>
-            </SelectContent>
-          </Select>
+          <Label className="text-foreground font-medium">장르</Label>
+          <div className="px-3 py-2 bg-primary/10 border border-primary/30 rounded-md">
+            <span className="text-foreground">로맨스 판타지</span>
+          </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="theme" className="text-foreground font-medium">주제/배경</Label>
+          <Label htmlFor="episodeCount" className="text-foreground font-medium">몇 화를 쓸 건지</Label>
           <Input
-            id="theme"
-            placeholder="예: 현대 서울에서 펼쳐지는 마법사들의 이야기"
-            value={theme}
-            onChange={(e) => setTheme(e.target.value)}
+            id="episodeCount"
+            type="number"
+            min="1"
+            max="10"
+            placeholder="1~10 사이의 숫자"
+            value={episodeCount}
+            onChange={(e) => setEpisodeCount(e.target.value)}
             className="bg-input border-primary/30 focus:border-primary"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="characters" className="text-foreground font-medium">등장인물</Label>
+          <Label htmlFor="synopsis" className="text-foreground font-medium">어떤 내용으로 쓸 건지</Label>
           <Textarea
-            id="characters"
-            placeholder="예: 주인공 - 평범한 대학생이지만 숨겨진 힘을 가진 김지우
-조연 - 신비로운 마법사 박서연"
-            value={characters}
-            onChange={(e) => setCharacters(e.target.value)}
-            className="bg-input border-primary/30 focus:border-primary min-h-24"
+            id="synopsis"
+            placeholder="예: 평범한 회사원 주인공이 어느 날 이세계로 떨어져 황태자와 사랑에 빠지는 이야기. 주인공은 현대 지식을 활용해 위기를 극복하고, 황태자는 처음엔 차갑지만 점점 마음을 열어간다."
+            value={synopsis}
+            onChange={(e) => setSynopsis(e.target.value)}
+            className="bg-input border-primary/30 focus:border-primary min-h-32"
           />
         </div>
 
