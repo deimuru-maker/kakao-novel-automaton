@@ -14,7 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      episodes: {
+        Row: {
+          content: string
+          created_at: string | null
+          episode_number: number
+          id: string
+          novel_id: string
+          summary: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          episode_number: number
+          id?: string
+          novel_id: string
+          summary?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          episode_number?: number
+          id?: string
+          novel_id?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "episodes_novel_id_fkey"
+            columns: ["novel_id"]
+            isOneToOne: false
+            referencedRelation: "novels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      novels: {
+        Row: {
+          characters: Json | null
+          created_at: string | null
+          current_episode_count: number | null
+          genre: string | null
+          id: string
+          settings: Json | null
+          synopsis: string
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          characters?: Json | null
+          created_at?: string | null
+          current_episode_count?: number | null
+          genre?: string | null
+          id?: string
+          settings?: Json | null
+          synopsis: string
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          characters?: Json | null
+          created_at?: string | null
+          current_episode_count?: number | null
+          genre?: string | null
+          id?: string
+          settings?: Json | null
+          synopsis?: string
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
