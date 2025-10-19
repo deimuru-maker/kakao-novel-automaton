@@ -1,17 +1,15 @@
-
-
 {
-  "name": "kakao-novel-automaton",
+  "name": "vite_react_shadcn_ts",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
+    "build:dev": "vite build --mode development",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
-  "homepage": "https://deimur-maker.github.io/kakao-novel-automaton",
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.11",
